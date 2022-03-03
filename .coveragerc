@@ -2,6 +2,9 @@
 [run]
 branch = True
 source = lamancha
+omit =
+    lamancha/pyqt*.py
+    lamancha/pyside*.py
 
 [report]
 # Regexes for lines to exclude from consideration

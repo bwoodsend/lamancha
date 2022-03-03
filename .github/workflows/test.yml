@@ -38,5 +38,38 @@ jobs:
           python-version: ${{ matrix.python-version }}
           architecture: ${{ matrix.architecture }}
 
+      - name: Install Qt dependencies
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          sudo apt-get install libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 \
+          libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 \
+          libxcb-xfixes0 libgl1-mesa-glx libegl1-mesa libfontconfig1 libglib2.0
+
+      - run: pip install PyQt5 PySide2
+      - run: pip install PyQt6 PySide6
+        if: ${{ matrix.architecture != 'x86'}}
+
+      # In order for Qt to run without a screen, we need to enable Qt's
+      # headless mode. .
+      - run: echo 'QT_QPA_PLATFORM=offscreen' >> $GITHUB_ENV
+        if: startsWith(matrix.os, 'ubuntu')
+
       - run: bash ./setup-environment.sh
+
       - run: pytest
+        env:
+          QT_VARIANT: pyqt5
+
+      - run: pytest
+        if: ${{ matrix.architecture != 'x86'}}
+        env:
+          QT_VARIANT: pyqt6
+
+      - run: pytest
+        env:
+          QT_VARIANT: pyside2
+
+      - run: pytest
+        if: ${{ matrix.architecture != 'x86'}}
+        env:
+          QT_VARIANT: pyside6
