@@ -31,3 +31,11 @@ Distribution '{self.distribution.project_name}' located at:
     {self.distribution.location}
 appears not to have a license.
 """
+
+
+class NoPythonLicense(NoLicense):
+    def __init__(self):
+        pass
+
+    def __str__(self):  # pragma: no cover
+        return "Python's license could not be found."

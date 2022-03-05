@@ -151,7 +151,7 @@ def _python():
             return {"": path.read_text("utf-8")}
         except FileNotFoundError:  # pragma: no cover
             continue
-    raise  # pragma: no cover
+    raise exceptions.NoPythonLicense()  # pragma: no cover
 
 
 python = Component(
