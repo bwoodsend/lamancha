@@ -1,7 +1,6 @@
 from setuptools import setup
 
 setup(
-    author="Flamingo",
     author_email='flamingo@flamingomail.com',
     description="A test package.",
     license="MIT license",

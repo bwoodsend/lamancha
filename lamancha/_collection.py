@@ -15,8 +15,6 @@ class Component:
     "The name of the component."
     version: str
     "Its version."
-    author: str
-    "Its author."
     summary: str
     "A one-line description of what the component does."
     url: str
@@ -33,6 +31,17 @@ class Component:
         self.url = url
 
     @property
+    def author(self):
+        """Its author(s). Defaults to a generic "The xxx development team"."""
+        return self._author
+
+    @author.setter
+    def author(self, author):
+        if not author or author == "UNKNOWN":
+            author = Placeholder(f"The {self.name} development team")
+        self._author = author
+
+    @property
     def license_name(self) -> str:
         """License type e.g 'MIT' or 'BSD'.
 
@@ -46,9 +55,11 @@ class Component:
 
     @license_name.setter
     def license_name(self, name):
-        name = name or "UNKNOWN"
-        name = re.sub(" licen[sc]e", "", name, flags=re.I)
-        name = re.sub("version ", "v", name, flags=re.I)
+        if name and name != "UNKNOWN":
+            name = re.sub(" licen[sc]e", "", name, flags=re.I)
+            name = re.sub("version ", "v", name, flags=re.I)
+        else:
+            name = Placeholder("UNKNOWN")
         self._license_name = name
 
     @property
@@ -71,6 +82,12 @@ class Component:
     @license.setter
     def license(self, x):
         self._license = x() if callable(x) else x
+
+
+class Placeholder(str):
+
+    def __bool__(self):
+        return False
 
 
 class Distribution(Component):
@@ -123,9 +140,6 @@ class Distribution(Component):
                 if classifier.startswith("License"):
                     self.license_name = classifier.split("::")[-1].strip()
 
-        if self.url is None or self.url == "UNKNOWN":
-            self.url = "https://pypi.org/project/" + self.name
-
     @property
     def license(self):
         out = {}
@@ -139,6 +153,17 @@ class Distribution(Component):
                 text = self._distribution.get_resource_string('', path).decode()
             out[name] = text
         return out
+
+    @property
+    def url(self) -> str:
+        """The distribution's homepage. Defaults to its PyPI page."""
+        return self._url
+
+    @url.setter
+    def url(self, url):
+        if not url or url == "UNKNOWN":
+            url = Placeholder(f"https://pypi.org/project/{self.name}")
+        self._url = url
 
 
 def _python():

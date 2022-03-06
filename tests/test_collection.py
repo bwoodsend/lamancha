@@ -12,6 +12,7 @@ def test_flit_symlink():
     assert list(self.license) == [""]
     assert "Copyright (c) 2022 Aphid" in self.license[""]
     assert self.url == "https://pypi.org/project/flit-symlink"
+    assert not self.url
 
 
 def test_setuptools_dual_license():
@@ -49,7 +50,8 @@ def test_missing_license():
 def test_setuptools_wheel():
     self = lamancha.Distribution(get_distribution("setuptools-wheel"))
     assert self.name == "setuptools-wheel"
-    assert self.author == "Flamingo"
+    assert self.author == "The setuptools-wheel development team"
+    assert not self.author
     assert self.license_name == "MIT"
     assert list(self.license) == [""]
     assert "Copyright (c) 2022 Flamingo" in self.license[""]
