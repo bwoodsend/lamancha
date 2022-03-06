@@ -34,8 +34,12 @@ appears not to have a license.
 
 
 class NoPythonLicense(NoLicense):
-    def __init__(self):
+
+    def __init__(self):  # pragma: no cover
         pass
 
     def __str__(self):  # pragma: no cover
-        return "Python's license could not be found."
+        return "Python's license could not be found. If your Python " \
+               "distribution does ship its license then this is a bug. Please" \
+               " report it at https://github.com/bwoodsend/lamancha/issues " \
+               "explaining how you installed Python."
