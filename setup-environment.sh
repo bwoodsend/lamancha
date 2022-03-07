@@ -7,7 +7,7 @@ cd "$(dirname "$0")"
 
 git clean -Xfdq tests/mock-distributions
 
-pip install -Uq pip setuptools wheel flit
+python -m pip install -Uq pip setuptools wheel flit
 pip install -qe .[test]
 
 cd tests/mock-distributions
