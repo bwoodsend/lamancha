@@ -19,7 +19,7 @@ def test_setuptools_dual_license():
     self = lamancha.Distribution(get_distribution("setuptools_dual_license"))
     assert self.name == "setuptools-dual-license"
     assert self.author == "Bear"
-    assert self.license_name == "MIT and BSD"
+    assert self.license_name == "GPLv2 or MIT"
     assert sorted(self.license) == ["BSD", "MIT"]
     assert "MIT" in self.license["MIT"]
     assert "BSD" in self.license["BSD"]

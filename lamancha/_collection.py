@@ -138,9 +138,14 @@ class Distribution(Component):
         if self.license_name == "UNKNOWN":
             self.license_name = Placeholder(self.license_name)
         if not self.license_name and self._metadata.get_all("Classifier"):
+            classifiers = []
             for classifier in self._metadata.get_all("Classifier"):
-                if classifier.startswith("License"):
-                    self.license_name = classifier.split("::")[-1].strip()
+                if not classifier.startswith("License"):
+                    continue
+                classifier = classifier.split("::")[-1].strip()
+                classifier = re.sub(r"^[^()]+ \(([^()]+)\)$", r"\1", classifier)
+                classifiers.append(classifier)
+            self.license_name = " or ".join(classifiers) or self.license_name
 
     @property
     def license(self):
