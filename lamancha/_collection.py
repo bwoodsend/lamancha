@@ -136,6 +136,8 @@ class Distribution(Component):
         self.url = self._metadata["Home-page"]
 
         if self.license_name == "UNKNOWN":
+            self.license_name = Placeholder(self.license_name)
+        if not self.license_name and self._metadata.get_all("Classifier"):
             for classifier in self._metadata.get_all("Classifier"):
                 if classifier.startswith("License"):
                     self.license_name = classifier.split("::")[-1].strip()
