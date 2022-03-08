@@ -14,10 +14,13 @@ qapp = QtWidgets.QApplication.instance() or QtWidgets.QApplication([])
 
 
 def test_terms_and_conditions():
-    dependencies = [
-        lamancha.python,
-        *map(lamancha.Distribution, pkg_resources.require("lamancha")),
-    ]
+    dependencies = [lamancha.python]
+    for distribution in pkg_resources.require("lamancha"):
+        try:
+            dependencies.append(lamancha.Distribution(distribution))
+        except (lamancha.exceptions.NoLicense,
+                lamancha.exceptions.FrozenEditable):
+            continue
     self = lamancha_qt.TermsAndConditions(dependencies)
 
     self.show()

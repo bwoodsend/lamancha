@@ -1,3 +1,6 @@
+import os
+import sys
+
 from pkg_resources import get_distribution
 import pytest
 
@@ -5,6 +8,11 @@ import lamancha
 
 
 def test_flit_symlink():
+    if getattr(sys, "frozen", False):
+        with pytest.raises(lamancha.exceptions.NoLicense):
+            self = lamancha.Distribution(get_distribution("flit_symlink"))
+        return
+
     self = lamancha.Distribution(get_distribution("flit_symlink"))
     assert self.name == "flit-symlink"
     assert self.author == "Aphid"
@@ -27,6 +35,12 @@ def test_setuptools_dual_license():
 
 
 def test_setuptools_editable():
+    if getattr(sys, "frozen", False):
+        with pytest.raises(lamancha.exceptions.FrozenEditable):
+            self = lamancha.Distribution(
+                get_distribution("setuptools_editable"))
+        return
+
     self = lamancha.Distribution(get_distribution("setuptools_editable"))
     assert self.name == "setuptools-editable"
     assert self.author == "Cat"
@@ -58,6 +72,9 @@ def test_setuptools_wheel():
     assert self.url == "https://pypi.org/project/setuptools-wheel"
 
 
+@pytest.mark.skipif(
+    getattr(sys, "frozen", False),
+    reason="PyInstaller fails to collect metadata from zipped eggs.")
 def test_setuptools_zipped_egg():
     with pytest.raises(lamancha.exceptions.Egg):
         lamancha.Distribution(get_distribution("setuptools_zipped_egg"))
@@ -67,3 +84,8 @@ def test_python():
     self = lamancha.python
     assert self.name == "Python"
     assert "PSF" in self.license[""]
+
+
+@pytest.mark.skipif(getattr(sys, "frozen", False), reason="")
+def test_pyinstaller_hook():
+    assert "hook-lamancha.py" in os.listdir(lamancha._PyInstaller_hook_dir()[0])

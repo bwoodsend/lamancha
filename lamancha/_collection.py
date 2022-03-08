@@ -127,6 +127,12 @@ class Distribution(Component):
         if not self._license_paths:
             raise exceptions.NoLicense(self._distribution)
 
+        if getattr(sys, "frozen", False):  # pragma: no cover
+            try:
+                self.license
+            except FileNotFoundError:
+                raise exceptions.FrozenEditable(self._distribution)
+
         self._metadata = email.parser.HeaderParser().parsestr(metadata)
         self.name = self._distribution.project_name
         self.version = self._distribution.version
@@ -173,16 +179,14 @@ class Distribution(Component):
         self._url = url
 
 
-def _python():
+def _python_license():
     import sysconfig
     root = sysconfig.get_path("stdlib")
     for name in ["../LICENSE.txt", "../LICENSE", "LICENSE.txt",
                  "LICENSE"]:  # pragma: no branch
         path = Path(root, name)
-        try:
-            return {"": path.read_text("utf-8")}
-        except FileNotFoundError:  # pragma: no cover
-            continue
+        if path.exists():  # pragma: no branch
+            return path
     raise exceptions.NoPythonLicense()  # pragma: no cover
 
 
@@ -190,5 +194,5 @@ python = Component(
     name="Python", version=sys.version.split()[0],
     author="Python Software Foundation", summary="Python is an " \
     "interpreted high-level general-purpose programming language.",
-    license_name="PSF 2", license=_python(),
+    license_name="PSF 2", license={"": _python_license().read_text("utf-8")},
     url="https://www.python.org")

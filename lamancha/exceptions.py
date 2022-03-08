@@ -20,6 +20,18 @@ then instead use:
 """
 
 
+class FrozenEditable(Exception):
+    __init__ = Egg.__init__
+
+    def __str__(self):  # pragma: no cover
+        return f"""
+Distribution '{self.distribution.project_name}' located at:
+    {self.distribution.location}
+appears to have been in an editable install format which unfortunately loses \
+its license in the process of freezing.
+"""
+
+
 class NoLicense(Exception):
 
     def __init__(self, distribution):

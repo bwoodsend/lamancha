@@ -23,6 +23,7 @@ setup(
     description=
     "A really boring package which finds and displays licenses in an assortment of CLI/GUI formats.",
     install_requires=["setuptools"],
+    entry_points={"pyinstaller40": "hook-dirs=lamancha:_PyInstaller_hook_dir"},
     extras_require={
         "test": ['pytest>=3', 'pytest-order', 'coverage', 'pytest-cov']
     },
