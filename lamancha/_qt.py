@@ -122,7 +122,9 @@ class TermsAndConditions:
 
             return
 
-    def show(self):
+    def centerise(self):
+        """Set the widget's size and position to sit naturally in the middle of
+        the screen."""
         screen = self.screen().size()
         self.setMinimumHeight((screen.height() * 2) // 3)
 
@@ -132,6 +134,8 @@ class TermsAndConditions:
             int(screen.height() // 2 -
                 max(size.height(), self.minimumHeight()) * 0.5))
 
+    def show(self):
+        self.centerise()
         super().show()
 
 
