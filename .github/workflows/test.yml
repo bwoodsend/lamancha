@@ -77,7 +77,7 @@ jobs:
         env:
           QT_VARIANT: pyside6
 
-      - run: pip install "pyinstaller @ git+https://github.com/pyinstaller/pyinstaller.git@v4"
+      - run: pip install pyinstaller
       - run: pyinstaller frozen-pytest.spec
         working-directory: tests/PyInstaller_
       - run: ./dist/frozen-pytest/frozen-pytest ../..
