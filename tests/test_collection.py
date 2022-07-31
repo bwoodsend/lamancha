@@ -89,3 +89,18 @@ def test_python():
 @pytest.mark.skipif(getattr(sys, "frozen", False), reason="")
 def test_pyinstaller_hook():
     assert "hook-lamancha.py" in os.listdir(lamancha._PyInstaller_hook_dir()[0])
+
+
+def test_first_textual_line():
+    self = lamancha.Distribution(get_distribution("setuptools-wheel"))
+    assert self.name == "setuptools-wheel"
+    assert self.author == "The setuptools-wheel development team"
+
+    self.license_name = "hello world!"
+    assert self.license_name == "hello world!"
+
+    self.license_name = "=====\n foo \n=====\n\nmore text\n"
+    assert self.license_name == "foo"
+
+    self.license_name = "----------"
+    assert not self.license_name

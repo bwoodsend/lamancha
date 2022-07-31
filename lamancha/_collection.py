@@ -56,8 +56,18 @@ class Component:
     @license_name.setter
     def license_name(self, name):
         if name and name != "UNKNOWN":
-            name = re.sub(" licen[sc]e", "", name, flags=re.I)
-            name = re.sub("version ", "v", name, flags=re.I)
+            # Occasionally, package authors put the entire license body in place
+            # of the license name. Rectify this by taking only the first non-
+            # punctuation line.
+            m = re.search(r"[^\n\w]*\w+.*", name)
+            if m:
+                name = m[0].strip()
+                # To make efficient use of screen space, strip the redundant
+                # word 'license' and contract 'version X' to just 'vX'.
+                name = re.sub(" licen[sc]e", "", name, flags=re.I)
+                name = re.sub("version ", "v", name, flags=re.I)
+            else:
+                name = Placeholder("UNKNOWN")
         else:
             name = Placeholder("UNKNOWN")
         self._license_name = name
