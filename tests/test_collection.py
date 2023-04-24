@@ -80,6 +80,16 @@ def test_setuptools_zipped_egg():
         lamancha.Distribution(get_distribution("setuptools_zipped_egg"))
 
 
+def test_pyproject_toml_editable():
+    self = lamancha.Distribution(get_distribution("pyproject_toml_editable"))
+    assert self.name == "pyproject-toml-editable"
+    assert self.author == "Hippo"
+    assert self.license_name == "MIT"
+    assert list(self.license) == [""]
+    assert "Copyright (c) 2022, The Hippos" in self.license[""]
+    assert self.url == "https://github.com/hippo/pyproject_toml_editable"
+
+
 def test_pth():
     assert sys.some_hack_pth_is_ran
 

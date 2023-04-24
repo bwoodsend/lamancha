@@ -1,0 +1,17 @@
+[project]
+name = "pyproject_toml_editable"
+description = "A pyproject.toml based package installed via pip install -e ."
+authors = [
+    { name="Hippo", email="hippo@bigmammals.com" },
+]
+version = "1.2.3"
+
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+]
+
+dependencies = []
+
+[project.urls]
+homepage = "https://github.com/hippo/pyproject_toml_editable"
+documentation = "https://docs.com"
