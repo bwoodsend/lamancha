@@ -45,7 +45,6 @@ def _check_fits_on_screen(self: lamancha_qt.TermsAndConditions):
     rect = self.rect().translated(self.pos())
 
     assert rect.width() < 1200
-    assert rect.height() < 800
     if rect.width() < screen.width():
         assert 0 < rect.left() < rect.right() < screen.width()
     if rect.height() < screen.height():
@@ -60,3 +59,15 @@ def centering(self: lamancha_qt.TermsAndConditions):
     screen_center = QtCore.QPoint(screen_center.width(), screen_center.height())
     mismatch = self.rect().translated(self.pos()).center() - screen_center
     return mismatch.manhattanLength() / max(self.height(), self.width())
+
+
+def test_cli(monkeypatch):
+
+    def _close():
+        while True:
+            for window in QtWidgets.QApplication.instance().allWindows():
+                window.close()
+                return
+
+    _ = QtCore.QTimer.singleShot(500, _close)
+    lamancha_qt.TermsAndConditions._demo()

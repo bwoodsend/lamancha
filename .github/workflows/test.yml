@@ -13,7 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.9, 3.7, 3.8, '3.10']
+        python-version: [3.9, 3.8, '3.10']
         architecture: ['x64']
         include:
           - os: macos-10.15
@@ -43,36 +43,41 @@ jobs:
 
       - name: Install Qt dependencies
         if: startsWith(matrix.os, 'ubuntu')
-        run: |
-          sudo apt-get install libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 \
-          libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 \
-          libxcb-xfixes0 libgl1-mesa-glx libegl1-mesa libfontconfig1 libglib2.0
+        uses: tlambert03/setup-qt-libs@v1
 
       - run: pip install PyQt5 PySide2
       - run: pip install PyQt6 PySide6
         if: ${{ matrix.architecture != 'x86'}}
 
-      # In order for Qt to run without a screen, we need to enable Qt's
-      # headless mode. .
-      - run: echo 'QT_QPA_PLATFORM=offscreen' >> $GITHUB_ENV
+      # In order for Qt to run without a screen, create a virtual one.
+      - run: sudo apt-get install -y xvfb
+        if: startsWith(matrix.os, 'ubuntu')
+      - run: |
+          Xvfb ':42' -screen 0, 1280x720x24 & disown
+          echo "DISPLAY=:42" >> $GITHUB_ENV
         if: startsWith(matrix.os, 'ubuntu')
 
       - run: bash ./setup-environment.sh
+      - run: pip freeze
 
       - run: pytest
+        timeout-minutes: 3
         env:
           QT_VARIANT: pyqt5
 
       - run: pytest
         if: ${{ matrix.architecture != 'x86'}}
+        timeout-minutes: 3
         env:
           QT_VARIANT: pyqt6
 
       - run: pytest
+        timeout-minutes: 3
         env:
           QT_VARIANT: pyside2
 
       - run: pytest
+        timeout-minutes: 3
         if: ${{ matrix.architecture != 'x86'}}
         env:
           QT_VARIANT: pyside6

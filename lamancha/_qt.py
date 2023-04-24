@@ -138,6 +138,26 @@ class TermsAndConditions:
         self.centerise()
         super().show()
 
+    @classmethod
+    def _demo(cls):
+        import itertools
+        import sys
+        import pkg_resources
+        from lamancha import Distribution, python, exceptions
+        app = cls._widgets.QApplication.instance() or cls._widgets.QApplication(
+            sys.argv)
+        all = []
+        installed = map(pkg_resources.find_distributions, sys.path)
+        for distribution in set(itertools.chain(*installed)):
+            try:
+                all.append(Distribution(distribution))
+            except (exceptions.NoLicense, exceptions.Egg,
+                    exceptions.FrozenEditable):
+                continue
+        self = cls([*all, python])
+        self.show()
+        (getattr(app, "exec", None) or app.exec_)()
+
 
 class Table:
     """A QtWidgets.QTable() subclass which automatically expands to its

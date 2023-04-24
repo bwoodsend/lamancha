@@ -80,6 +80,9 @@ def test_setuptools_zipped_egg():
         lamancha.Distribution(get_distribution("setuptools_zipped_egg"))
 
 
+@pytest.mark.skipif(
+    getattr(sys, "frozen", False),
+    reason="PyInstaller can't find editable pyproject.toml installs.")
 def test_pyproject_toml_editable():
     self = lamancha.Distribution(get_distribution("pyproject_toml_editable"))
     assert self.name == "pyproject-toml-editable"
@@ -90,6 +93,8 @@ def test_pyproject_toml_editable():
     assert self.url == "https://github.com/hippo/pyproject_toml_editable"
 
 
+@pytest.mark.skipif(getattr(sys, "frozen", False),
+                    reason="PyInstaller doesn't support .pth files.")
 def test_pth():
     assert sys.some_hack_pth_is_ran
 
