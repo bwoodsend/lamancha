@@ -80,6 +80,10 @@ def test_setuptools_zipped_egg():
         lamancha.Distribution(get_distribution("setuptools_zipped_egg"))
 
 
+def test_pth():
+    assert sys.some_hack_pth_is_ran
+
+
 def test_python():
     self = lamancha.python
     assert self.name == "Python"

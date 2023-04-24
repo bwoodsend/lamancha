@@ -118,6 +118,8 @@ class Distribution(Component):
                         None, name + ".pth").decode()
                 except FileNotFoundError:
                     continue
+                if not path or path.startswith(("#", "import ")):
+                    continue
                 files.extend(Path(path).glob("*"))
 
         elif isinstance(self._distribution, pkg_resources.EggInfoDistribution):

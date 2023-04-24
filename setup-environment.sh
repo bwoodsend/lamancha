@@ -34,3 +34,5 @@ cd ../setuptools_zipped_egg
 python setup.py -q install
 
 cd "$OLD_CWD"
+
+echo 'import sys; sys.some_hack_pth_is_ran = True' > "$(python -c 'import site; print(site.getsitepackages()[0])')/some-hack.pth"
