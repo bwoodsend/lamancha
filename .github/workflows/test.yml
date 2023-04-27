@@ -47,7 +47,7 @@ jobs:
 
       - run: pip install PyQt5 PySide2
       - run: pip install PyQt6 PySide6
-        if: ${{ matrix.architecture != 'x86'}}
+        if: matrix.architecture != 'x86' && matrix.os != 'macos-10.15'
 
       # In order for Qt to run without a screen, create a virtual one.
       - run: sudo apt-get install -y xvfb
@@ -66,7 +66,7 @@ jobs:
           QT_VARIANT: pyqt5
 
       - run: pytest
-        if: ${{ matrix.architecture != 'x86'}}
+        if: matrix.architecture != 'x86' && matrix.os != 'macos-10.15'
         timeout-minutes: 3
         env:
           QT_VARIANT: pyqt6
@@ -78,7 +78,7 @@ jobs:
 
       - run: pytest
         timeout-minutes: 3
-        if: ${{ matrix.architecture != 'x86'}}
+        if: matrix.architecture != 'x86' && matrix.os != 'macos-10.15'
         env:
           QT_VARIANT: pyside6
 
