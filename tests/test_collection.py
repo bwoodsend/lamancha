@@ -1,7 +1,6 @@
 import os
 import sys
 
-from pkg_resources import get_distribution
 import pytest
 
 import lamancha
@@ -10,21 +9,21 @@ import lamancha
 def test_flit_symlink():
     if getattr(sys, "frozen", False):
         with pytest.raises(lamancha.exceptions.NoLicense):
-            self = lamancha.Distribution(get_distribution("flit_symlink"))
+            self = lamancha.Distribution("flit_symlink")
         return
 
-    self = lamancha.Distribution(get_distribution("flit_symlink"))
-    assert self.name == "flit-symlink"
+    self = lamancha.Distribution("flit_symlink")
+    assert self.name == "flit_symlink"
     assert self.author == "Aphid"
     assert self.license_name == "MIT"
     assert list(self.license) == [""]
     assert "Copyright (c) 2022 Aphid" in self.license[""]
-    assert self.url == "https://pypi.org/project/flit-symlink"
+    assert self.url == "https://pypi.org/project/flit_symlink"
     assert not self.url
 
 
 def test_setuptools_dual_license():
-    self = lamancha.Distribution(get_distribution("setuptools_dual_license"))
+    self = lamancha.Distribution("setuptools_dual_license")
     assert self.name == "setuptools-dual-license"
     assert self.author == "Bear"
     assert self.license_name == "GPLv2 or MIT"
@@ -37,11 +36,10 @@ def test_setuptools_dual_license():
 def test_setuptools_editable():
     if getattr(sys, "frozen", False):
         with pytest.raises(lamancha.exceptions.FrozenEditable):
-            self = lamancha.Distribution(
-                get_distribution("setuptools_editable"))
+            self = lamancha.Distribution("setuptools_editable")
         return
 
-    self = lamancha.Distribution(get_distribution("setuptools_editable"))
+    self = lamancha.Distribution("setuptools_editable")
     assert self.name == "setuptools-editable"
     assert self.author == "Cat"
     assert self.license_name == "MIT"
@@ -52,17 +50,17 @@ def test_setuptools_editable():
 
 def test_setuptools_install():
     with pytest.raises(lamancha.exceptions.Egg, match="setuptools-install"):
-        lamancha.Distribution(get_distribution("setuptools_install"))
+        self = lamancha.Distribution("setuptools_install")
 
 
 def test_missing_license():
     with pytest.raises(lamancha.exceptions.NoLicense,
                        match="setuptools-missing-license"):
-        lamancha.Distribution(get_distribution("setuptools_missing_license"))
+        lamancha.Distribution("setuptools_missing_license")
 
 
 def test_setuptools_wheel():
-    self = lamancha.Distribution(get_distribution("setuptools-wheel"))
+    self = lamancha.Distribution("setuptools-wheel")
     assert self.name == "setuptools-wheel"
     assert self.author == "The setuptools-wheel development team"
     assert not self.author
@@ -77,14 +75,14 @@ def test_setuptools_wheel():
     reason="PyInstaller fails to collect metadata from zipped eggs.")
 def test_setuptools_zipped_egg():
     with pytest.raises(lamancha.exceptions.Egg):
-        lamancha.Distribution(get_distribution("setuptools_zipped_egg"))
+        lamancha.Distribution("setuptools_zipped_egg")
 
 
 @pytest.mark.skipif(
     getattr(sys, "frozen", False),
     reason="PyInstaller can't find editable pyproject.toml installs.")
 def test_pyproject_toml_editable():
-    self = lamancha.Distribution(get_distribution("pyproject_toml_editable"))
+    self = lamancha.Distribution("pyproject_toml_editable")
     assert self.name == "pyproject-toml-editable"
     assert self.author == "Hippo"
     assert self.license_name == "MIT"
@@ -111,7 +109,7 @@ def test_pyinstaller_hook():
 
 
 def test_first_textual_line():
-    self = lamancha.Distribution(get_distribution("setuptools-wheel"))
+    self = lamancha.Distribution("setuptools-wheel")
     assert self.name == "setuptools-wheel"
     assert self.author == "The setuptools-wheel development team"
 
@@ -123,3 +121,14 @@ def test_first_textual_line():
 
     self.license_name = "----------"
     assert not self.license_name
+
+
+def test_collect_dependencies():
+    assert "lamancha" in lamancha.collect_dependencies("lamancha")
+    assert "pytest" not in lamancha.collect_dependencies("lamancha")
+    assert "pluggy" in lamancha.collect_dependencies("pytest")
+    assert "pytest-cov" in lamancha.collect_dependencies("lamancha[test]")
+    assert "lamancha" in lamancha.collect_dependencies(
+        'lamancha; python_version > "3.6"')
+    assert lamancha.collect_dependencies(
+        'lamancha; python_version < "3.6"') == set()

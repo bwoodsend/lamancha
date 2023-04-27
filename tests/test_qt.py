@@ -1,8 +1,6 @@
 import os
 import importlib
 
-import pkg_resources
-
 import lamancha
 
 qt = os.environ.get("QT_VARIANT", "pyqt5")
@@ -15,7 +13,7 @@ qapp = QtWidgets.QApplication.instance() or QtWidgets.QApplication([])
 
 def test_terms_and_conditions():
     dependencies = [lamancha.python]
-    for distribution in pkg_resources.require("lamancha"):
+    for distribution in lamancha.collect_dependencies("lamancha"):
         try:
             dependencies.append(lamancha.Distribution(distribution))
         except (lamancha.exceptions.NoLicense,

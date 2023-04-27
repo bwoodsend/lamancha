@@ -1,5 +1,5 @@
 from . import exceptions
-from ._collection import Component, python, Distribution
+from ._collection import Component, python, Distribution, collect_dependencies
 
 
 def _PyInstaller_hook_dir():

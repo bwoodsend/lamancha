@@ -2,10 +2,13 @@
 
 block_cipher = None
 
-from PyInstaller.utils.hooks import collect_entry_point
+from PyInstaller.utils.hooks import collect_entry_point, copy_metadata
+import lamancha
 
 # Collect all available pytest plugins.
 datas, hidden = collect_entry_point("pytest11")
+for distribution in lamancha.collect_dependencies("lamancha[test]"):
+    datas += copy_metadata(distribution)
 
 a = Analysis(['frozen-pytest.py'],
              pathex=[SPECPATH],

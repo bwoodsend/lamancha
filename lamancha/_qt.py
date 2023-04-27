@@ -1,4 +1,8 @@
 from textwrap import dedent
+try:  # pragma: no cover
+    import importlib.metadata as importlib_metadata
+except ImportError:  # pragma: no cover
+    import importlib_metadata
 
 
 def dependency_label(component, QtWidgets):
@@ -22,16 +26,18 @@ class TermsAndConditions:
 
     Usage:
 
-        import pkg_resources
+        from PyQt5 import QtWidgets
         import lamancha.pyqt5
 
         dependencies = [
             lamancha.python,
-            *map(lamancha.Distribution, pkg_resources.require("matplotlib")),
+            *map(lamancha.Distribution, lamancha.collect_dependencies("matplotlib")),
         ]
 
+        app = QtWidgets.QApplication([])
         licenseWidget = lamancha.pyqt5.TermsAndConditions(dependencies)
         licenseWidget.show()
+        app.exec()
 
     """
 
@@ -140,17 +146,14 @@ class TermsAndConditions:
 
     @classmethod
     def _demo(cls):
-        import itertools
         import sys
-        import pkg_resources
         from lamancha import Distribution, python, exceptions
-        app = cls._widgets.QApplication.instance() or cls._widgets.QApplication(
-            sys.argv)
+        app = cls._widgets.QApplication.instance() \
+            or cls._widgets.QApplication(sys.argv)
         all = []
-        installed = map(pkg_resources.find_distributions, sys.path)
-        for distribution in set(itertools.chain(*installed)):
+        for distribution in importlib_metadata.distributions():
             try:
-                all.append(Distribution(distribution))
+                all.append(Distribution(distribution.metadata["name"]))
             except (exceptions.NoLicense, exceptions.Egg,
                     exceptions.FrozenEditable):
                 continue
