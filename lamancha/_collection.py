@@ -181,7 +181,8 @@ class Distribution(Component):
     @url.setter
     def url(self, url):
         if not url or url == "UNKNOWN":
-            url = Placeholder(f"https://pypi.org/project/{self.name}")
+            name = re.sub("[._-]+", "-", self.name)
+            url = Placeholder(f"https://pypi.org/project/{name}")
         self._url = url
 
 

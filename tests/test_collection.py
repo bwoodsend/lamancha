@@ -18,13 +18,13 @@ def test_flit_symlink():
     assert self.license_name == "MIT"
     assert list(self.license) == [""]
     assert "Copyright (c) 2022 Aphid" in self.license[""]
-    assert self.url == "https://pypi.org/project/flit_symlink"
+    assert self.url == "https://pypi.org/project/flit-symlink"
     assert not self.url
 
 
 def test_setuptools_dual_license():
-    self = lamancha.Distribution("setuptools_dual_license")
-    assert self.name == "setuptools-dual-license"
+    self = lamancha.Distribution("setuptools-dual_license")
+    assert self.name == "setuptools_dual_license"
     assert self.author == "Bear"
     assert self.license_name == "GPLv2 or MIT"
     assert sorted(self.license) == ["BSD", "MIT"]
@@ -40,7 +40,7 @@ def test_setuptools_editable():
         return
 
     self = lamancha.Distribution("setuptools_editable")
-    assert self.name == "setuptools-editable"
+    assert self.name == "setuptools_editable"
     assert self.author == "Cat"
     assert self.license_name == "MIT"
     assert list(self.license) == [""]
@@ -49,20 +49,20 @@ def test_setuptools_editable():
 
 
 def test_setuptools_install():
-    with pytest.raises(lamancha.exceptions.Egg, match="setuptools-install"):
+    with pytest.raises(lamancha.exceptions.Egg, match="setuptools_install"):
         self = lamancha.Distribution("setuptools_install")
 
 
 def test_missing_license():
     with pytest.raises(lamancha.exceptions.NoLicense,
-                       match="setuptools-missing-license"):
+                       match="setuptools_missing_license"):
         lamancha.Distribution("setuptools_missing_license")
 
 
 def test_setuptools_wheel():
     self = lamancha.Distribution("setuptools-wheel")
-    assert self.name == "setuptools-wheel"
-    assert self.author == "The setuptools-wheel development team"
+    assert self.name == "setuptools_wheel"
+    assert self.author == "The setuptools_wheel development team"
     assert not self.author
     assert self.license_name == "MIT"
     assert list(self.license) == [""]
@@ -82,8 +82,8 @@ def test_setuptools_zipped_egg():
     getattr(sys, "frozen", False),
     reason="PyInstaller can't find editable pyproject.toml installs.")
 def test_pyproject_toml_editable():
-    self = lamancha.Distribution("pyproject_toml_editable")
-    assert self.name == "pyproject-toml-editable"
+    self = lamancha.Distribution("pyproject-toml-editable")
+    assert self.name == "pyproject_toml_editable"
     assert self.author == "Hippo"
     assert self.license_name == "MIT"
     assert list(self.license) == [""]
@@ -110,8 +110,8 @@ def test_pyinstaller_hook():
 
 def test_first_textual_line():
     self = lamancha.Distribution("setuptools-wheel")
-    assert self.name == "setuptools-wheel"
-    assert self.author == "The setuptools-wheel development team"
+    assert self.name == "setuptools_wheel"
+    assert self.author == "The setuptools_wheel development team"
 
     self.license_name = "hello world!"
     assert self.license_name == "hello world!"
