@@ -140,17 +140,18 @@ class Distribution(Component):
         self._metadata = metadata
         self.name = metadata["name"]
         self.version = self._distribution.version
-        self.author = self._metadata["Author"]
-        if not self._metadata["Author"]:
+        self.author = self._metadata.get("Author")
+        if not self._metadata.get("Author"):
             match = re.match("([^<>]+)<([^>]+)>",
                              self._metadata.get("Author-Email", "").strip())
             if match:
                 self.author = match[1].strip()
         self.summary = self._metadata["Summary"]
-        self.license_name = self._metadata["License"]
-        self.url = self._metadata["Home-page"]
-        if not self.url and self._metadata["Project-URL"]:
-            match = re.search("homepage, (.*)", self._metadata["Project-URL"])
+        self.license_name = self._metadata.get("License")
+        self.url = self._metadata.get("Home-page")
+        if not self.url and self._metadata.get("Project-URL"):
+            match = re.search("homepage, (.*)",
+                              self._metadata.get("Project-URL"))
             if match:  # pragma: no branch
                 self.url = match[1]
 
