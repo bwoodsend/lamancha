@@ -35,8 +35,12 @@ def test_setuptools_dual_license():
 
 def test_setuptools_editable():
     if getattr(sys, "frozen", False):
-        with pytest.raises(lamancha.exceptions.FrozenEditable):
-            self = lamancha.Distribution("setuptools_editable")
+        if sys.version_info < (3, 12):
+            with pytest.raises(lamancha.exceptions.FrozenEditable):
+                self = lamancha.Distribution("setuptools_editable")
+        else:
+            with pytest.raises(lamancha.exceptions.NoLicense):
+                self = lamancha.Distribution("setuptools_editable")
         return
 
     self = lamancha.Distribution("setuptools_editable")
