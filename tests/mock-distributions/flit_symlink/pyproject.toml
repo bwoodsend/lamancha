@@ -7,7 +7,9 @@ name = "flit_symlink"
 authors = [{name = "Aphid"}]
 license = {file = "LICENSE"}
 classifiers = [
+    "License :: OSI Approved",
     "License :: OSI Approved :: MIT License",
+    "License :: DFSG approved",
     "Programming Language :: Python :: 3",
 ]
 dynamic = ["version", "description"]

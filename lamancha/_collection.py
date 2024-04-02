@@ -153,6 +153,8 @@ class Distribution(Component):
             for classifier in self._metadata.get_all("Classifier"):
                 if not classifier.startswith("License"):
                     continue
+                if re.fullmatch("License :: .* [Aa]pproved", classifier):
+                    continue
                 classifier = classifier.split("::")[-1].strip()
                 classifier = re.sub(r"^[^()]+ \(([^()]+)\)$", r"\1", classifier)
                 classifiers.append(classifier)
