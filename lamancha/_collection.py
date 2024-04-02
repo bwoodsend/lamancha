@@ -147,17 +147,8 @@ class Distribution(Component):
             if match:
                 self.author = match[1].strip()
         self.summary = self._metadata["Summary"]
-        self.license_name = self._metadata.get("License")
-        self.url = self._metadata.get("Home-page")
-        if not self.url and self._metadata.get("Project-URL"):
-            match = re.search("homepage, (.*)",
-                              self._metadata.get("Project-URL"))
-            if match:  # pragma: no branch
-                self.url = match[1]
-
-        if self.license_name == "UNKNOWN":
-            self.license_name = Placeholder(self.license_name)
-        if not self.license_name and self._metadata.get_all("Classifier"):
+        self.license_name = Placeholder("UNKOWN")
+        if self._metadata.get_all("Classifier"):
             classifiers = []
             for classifier in self._metadata.get_all("Classifier"):
                 if not classifier.startswith("License"):
@@ -166,6 +157,13 @@ class Distribution(Component):
                 classifier = re.sub(r"^[^()]+ \(([^()]+)\)$", r"\1", classifier)
                 classifiers.append(classifier)
             self.license_name = " or ".join(classifiers) or self.license_name
+        self.license_name = self.license_name or self._metadata.get("License")
+        self.url = self._metadata.get("Home-page")
+        if not self.url and self._metadata.get("Project-URL"):
+            match = re.search("homepage, (.*)",
+                              self._metadata.get("Project-URL"))
+            if match:  # pragma: no branch
+                self.url = match[1]
 
     @property
     def license(self):
